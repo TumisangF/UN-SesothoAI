@@ -3,21 +3,27 @@ from pydantic import BaseModel
 import os
 from openai import OpenAI
 
-app = FastAPI(title="Sesotho AI Backend")
+app = FastAPI(title="Sesotho AI Backend (Azure)")
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Connect to Azure OpenAI
+client = OpenAI(
+    api_key=os.getenv("AZURE_OPENAI_KEY"),
+    api_base=os.getenv("AZURE_OPENAI_ENDPOINT"),
+    api_type="azure",
+    api_version="2023-07-01-preview"
+)
 
 class Query(BaseModel):
     text: str
 
 @app.get("/")
 def health():
-    return {"status": "ok", "message": "Sesotho AI backend running"}
+    return {"status": "ok", "message": "Sesotho AI backend running on Azure"}
 
 @app.post("/chat")
 def chat(query: Query):
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        engine=os.getenv("AZURE_OPENAI_DEPLOYMENT"),  # your Azure deployment
         messages=[
             {
                 "role": "system",
@@ -33,6 +39,4 @@ def chat(query: Query):
         max_tokens=200
     )
 
-    return {
-        "reply": response.choices[0].message.content
-    }
+    return {"reply": response.choices[0].message.content}
