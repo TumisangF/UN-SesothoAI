@@ -36,7 +36,6 @@ def chat(query: Query):
             },
             {"role": "user", "content": query.text}
         ],
-        temperature=0.3,
         max_completion_tokens=200
     )
 
