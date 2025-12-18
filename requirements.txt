@@ -2,3 +2,7 @@ fastapi
 uvicorn
 openai
 pydantic
+python-multipart==0.0.21
+africastalking==2.0.1
+requests==2.32.5
+certifi==2025.11.12
